@@ -10,3 +10,11 @@ function initMap() {
         mapTypeControl: false
     });
 }
+
+/* MENU TOGGLE */
+
+$(document).ready(function(){
+    $('.menu-anchor').on('click touchstart', function(e){
+        $('menu').toggleClass('menu-active');
+    });
+});

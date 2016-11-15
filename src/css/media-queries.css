@@ -1,0 +1,26 @@
+@media only screen and (min-width: 767px) {
+    
+    menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 220px;
+        height: 100%;
+        overflow-y: scroll;
+        padding-top: 10px;
+        background: #d55401;
+        box-shadow: inset -5px -10px 10px 0 rgba(0,0,0,.3)
+    }
+    
+    menu {
+        -webkit-transform: translateX(-220px);
+        transform: translateX(-220px);
+    }
+
+    .menu-active {
+        -webkit-transform: translateX(0);
+        transform: translateX(0);
+    }
+    
+}
