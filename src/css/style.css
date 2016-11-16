@@ -3,6 +3,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 html, body {
@@ -12,7 +13,7 @@ html, body {
 
 body {
     font: 100% arial, verdana, tahoma, sans-serif;
-    color: #FFF;
+    color: #000;
     background-color: #f1c40f;
 }
 
@@ -31,15 +32,14 @@ header h1 {
     display: inline-block;
     vertical-align: middle;
     text-align: center;
-    width: 80%;
+    width: 100%;
+    padding-left: 50px;
     font-size: 1.5em;
 }
 
-header input {
-    float: right;
-    padding: 10px;
-    width: 200px;
-    border: none;
+
+h2 {
+    padding-top: 100px;
 }
 
 .menu-anchor {
@@ -47,9 +47,7 @@ header input {
     height: 32px;
     display: inline-block;
     vertical-align: middle;
-    position: relative;
-    text-indent: -9999px;
-    overflow: hidden;
+    position: fixed;
     cursor: pointer;
     background: #FFF;
 }
@@ -70,7 +68,7 @@ header input {
 
 /* MENU */
 
-menu {
+.menu {
     position: fixed;
     top: 0;
     left: 0;
@@ -78,12 +76,12 @@ menu {
     width: 100%;
     height: 100%;
     overflow-y: scroll;
-    padding-top: 10px;
+    padding: 30px;
     background: #d55401;
     box-shadow: inset -5px -10px 10px 0 rgba(0,0,0,.3)
 }
 
-menu {
+.menu {
     -webkit-transform: translateY(-100vh);
     transform: translateY(-100vh);
     -webkit-transition: -webkit-transform .25s linear;
@@ -96,6 +94,20 @@ menu {
     -webkit-transform: translateY(0);
     transform: translateY(0);
 }
+
+.search-box {
+     	border: 1px solid #d1d1d1;
+    	font: bold 12px Arial,Helvetica,Sans-serif;
+    	color: white;
+    	width: 300px;
+    	padding: 6px 15px 6px 35px;
+    	border-radius: 20px;
+    	background-image: url('../img/search-white.png');
+	    background-position: 10px 6px;
+	    background-repeat: no-repeat;
+	    background-color: #4c525f;
+        margin: 30px 15px;
+     }
 
 /* MAIN */
 

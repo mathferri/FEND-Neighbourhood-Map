@@ -12,16 +12,32 @@
             <span class="menu-anchor"></span>
             <h1>Best Restaurants in Curitiba</h1>
         </header>
-        <menu>
+        <div class="menu">
+            <h2>My personal favorite places to eat in Curitiba</h2>
+            <div>
+                <input type="text" class="search-box" data-bind="textInput: query" placeholder="Look for a restaurant">
+            </div>
+            <div id="list">
+                <ul data-bind="foreach: search">
+                    <li data-bind="text: title, click: $parent.clickGallery"></li>
+                </ul>
+            </div>
+          
+
             <ul>
             </ul>
-        </menu>
+        </div>
+            
+       
         <section class="main">
             <div id="map"></div>
         </section> 
         <script src="js/knockout-3.4.1.js"></script>
         <script src="js/jquery-3.1.1.min.js"></script>
         <script src="js/app.js"></script>
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0yBj3TfohwRmP5C8dVFfU7XvBRCt_o9A&v=3&callback=initMap"></script>
+        <script async defer
+        src=
+        "https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyC0yBj3TfohwRmP5C8dVFfU7XvBRCt_o9A&v=3&callback=initMap">
+    </script>
     </body>
 </html>
