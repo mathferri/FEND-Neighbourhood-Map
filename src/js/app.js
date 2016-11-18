@@ -4,6 +4,14 @@ var map;
 
 var markers = [];
 
+var marker;
+
+var restaurants = [
+    {title: "Tuk-Tuk Comida Indiana e Tailandesa", location: {lat: -25.4141575, lng: -49.2462872}, id: "ChIJZUviWDLk3JQRNRqYsyrkIRk"},
+    {title: "Terrazza 40 - Restaurante Panorâmico", location: {lat: -25.4302751, lng: -49.2919939}, id: "ChIJ_wDMVPDj3JQRwXztiU8LKs4"},
+    {title: "Lisboa Gastronomia", location: {lat: -25.4294114, lng: -49.2817917}, id: "ChIJ61qqKwrk3JQRsQan_u3rtbo"}
+];
+
 function initMap() {
     // Constructor creates a new map - only center and zoom are required.
     map = new google.maps.Map(document.getElementById('map'), {
@@ -11,13 +19,6 @@ function initMap() {
         zoom: 14,
         mapTypeControl: false
     });
-
-
-var restaurants = [
-    {title: "Tuk-Tuk Comida Indiana e Tailandesa", location: {lat: -25.4141575, lng: -49.2462872}, id: "ChIJZUviWDLk3JQRNRqYsyrkIRk"},
-    {title: "Terrazza 40 - Restaurante Panorâmico", location: {lat: -25.4302751, lng: -49.2919939}, id: "ChIJ_wDMVPDj3JQRwXztiU8LKs4"},
-    {title: "Lisboa Gastronomia", location: {lat: -25.4294114, lng: -49.2817917}, id: "ChIJ61qqKwrk3JQRsQan_u3rtbo"}
-];
     
 var largeInfowindow = new google.maps.InfoWindow();
 
@@ -28,7 +29,7 @@ var largeInfowindow = new google.maps.InfoWindow();
           var title = restaurants[i].title;
           var id = restaurants[i].id;
           // Create a marker per location, and put into markers array.
-           var marker = new google.maps.Marker({
+           marker = new google.maps.Marker({
             position: position,
             title: title,
             animation: google.maps.Animation.DROP,
@@ -115,9 +116,73 @@ var largeInfowindow = new google.maps.InfoWindow();
 
 
 
+
+
+/*------------------------------------------------------------------*/
+
+var AppViewModel = function() {
+
+    var self = this;
+
+    self.restaurants = ko.observable(restaurants);
+
+
+    //click on gallery to display marker
+    self.clickGallery = function(restaurants) {
+        map.setZoom(18);
+        map.setCenter(restaurants.location);
+
+        populateInfoWindow(restaurants.markerObject, largeInfowindow);
+    };
+
+
+
+    self.query = ko.observable('');
+    // self.search = ko.computed(function() {
+    //     // Got lines 51-53 from https://discussions.udacity.com/t/search-function-implemetation/15105/33
+    //      return ko.utils.arrayFilter(self.availableGalleries(), function(gallery) {
+    //           return gallery.title.toLowerCase().indexOf(self.query().toLowerCase()) >= 0;
+    //     });
+    //   });
+
+    self.search = ko.computed(function() {
+        // Got lines 51-53 from https://discussions.udacity.com/t/search-function-implemetation/15105/33
+        var newArray = ko.utils.arrayFilter(self.restaurants(), function(gallery) {
+            if (gallery.title.toLowerCase().indexOf(self.query().toLowerCase()) >= 0) {
+                if (gallery.markerObject) {
+                    gallery.markerObject.setVisible(true);
+                }
+                return true;
+            } else {
+                if (gallery.markerObject) {
+                    gallery.markerObject.setVisible(false);
+                }
+                return false;
+            }
+        });
+        return newArray;
+    });
+
+};
+
+//error to handle Google failure
+var googleFailure = function() {
+    alert('Could not load Google Map. Try again later');
+};
+
+
+// Activates knockout.js
+
+
 $(document).ready(function(){
     $('.menu-anchor').on('click touchstart', function(e){
         $('.menu').toggleClass('menu-active');
     });
     showListings();
+    ko.applyBindings(new AppViewModel());
+
 });
+
+
+
+
