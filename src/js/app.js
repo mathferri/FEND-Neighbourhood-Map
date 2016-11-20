@@ -28,28 +28,44 @@ function initMap() {
     
     infoWindow = new google.maps.InfoWindow();
 
+    // Style the markers a bit. This will be our listing marker icon.
+    var defaultIcon = makeMarkerIcon('d60fbf');
+
+    // Create a "highlighted location" marker color for when the user
+    // mouses over the marker.
+    var highlightedIcon = makeMarkerIcon('FFFF24');
+    
     // The following group uses the location array to create an array of markers on initialize.
-        for (var i = 0; i < restaurants.length; i++) {
-            // Get the variables from the array.
-            var position = restaurants[i].location;
-            var title = restaurants[i].title;
-            var id = restaurants[i].id;
-            // Create a marker per restaurant, and put into markers array.
-            marker = new google.maps.Marker({
+    for (var i = 0; i < restaurants.length; i++) {
+        // Get the variables from the array.
+        var position = restaurants[i].location;
+        var title = restaurants[i].title;
+        var id = restaurants[i].id;
+        // Create a marker per restaurant, and put into markers array.
+        marker = new google.maps.Marker({
             position: position,
             title: title,
             animation: google.maps.Animation.DROP,
             id: id,
+            icon: defaultIcon,
         });
-            // Adds marker to restaurant item.
-            restaurants[i].markerObject = marker;
-            // Push the marker to our array of markers.
-            markers.push(marker);
-            // Create an onclick event to open an infowindow at each marker.
-            marker.addListener("click", function() {
-                populateInfoWindow(this, infoWindow);
+        // Adds marker to restaurant item.
+        restaurants[i].markerObject = marker;
+        // Push the marker to our array of markers.
+        markers.push(marker);
+        // Create an onclick event to open an infowindow at each marker.
+        marker.addListener("click", function() {
+            populateInfoWindow(this, infoWindow);
+        });
+        // Two event listeners - one for mouseover, one for mouseout,
+        // to change the colors back and forth.
+        marker.addListener('mouseover', function() {
+            this.setIcon(highlightedIcon);
             });
-        }
+        marker.addListener('mouseout', function() {
+            this.setIcon(defaultIcon);
+        });
+    }
 }
 
 /* POPULATE INFOWINDOW FUNCTION*/
@@ -99,8 +115,10 @@ function populateInfoWindow(marker, infowindow) {
                 infowindow.addListener("closeclick", function() {
                     infowindow.marker = null;
                 });
+                
             }
         });
+        toggleBounce(marker);
     }
 }
             
@@ -113,6 +131,35 @@ function showListings() {
         markers[i].setMap(map);  
     }   
 } 
+
+/* TOGGLE BOUNCE FUNCTION */
+
+function toggleBounce(marker) {
+    if (marker.getAnimation() !== null) {
+        marker.setAnimation(null);
+    } else {
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function() {
+            marker.setAnimation(null);
+        }, 1400);
+    }
+}
+
+/* MAKE MARKER FUNCTION */
+
+// This function takes in a COLOR, and then creates a new marker
+// icon of that color. The icon will be 21 px wide by 34 high, have an origin
+// of 0, 0 and be anchored at 10, 34).
+function makeMarkerIcon(markerColor) {
+    var markerImage = new google.maps.MarkerImage(
+        'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
+        '|40|_|%E2%80%A2',
+        new google.maps.Size(21, 34),
+        new google.maps.Point(0, 0),
+        new google.maps.Point(10, 34),
+        new google.maps.Size(21,34));
+    return markerImage;
+}
 
 /* VIEW MODEL */
 
