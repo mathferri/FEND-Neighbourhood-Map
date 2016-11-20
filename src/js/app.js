@@ -1,4 +1,4 @@
-/* MAP */
+/* MAP VARIABLES*/
 
 var map;
 
@@ -9,8 +9,14 @@ var marker;
 var restaurants = [
     {title: "Tuk-Tuk Comida Indiana e Tailandesa", location: {lat: -25.4141575, lng: -49.2462872}, id: "ChIJZUviWDLk3JQRNRqYsyrkIRk"},
     {title: "Terrazza 40 - Restaurante Panorâmico", location: {lat: -25.4302751, lng: -49.2919939}, id: "ChIJ_wDMVPDj3JQRwXztiU8LKs4"},
-    {title: "Lisboa Gastronomia", location: {lat: -25.4294114, lng: -49.2817917}, id: "ChIJ61qqKwrk3JQRsQan_u3rtbo"}
+    {title: "Lisboa Gastronomia", location: {lat: -25.4294114, lng: -49.2817917}, id: "ChIJ61qqKwrk3JQRsQan_u3rtbo"},
+    {title: "Pasteur Grill", location: {lat: -25.4429859, lng: -49.2799385}, id: "ChIJkb4GW3fk3JQRbOAATP6bH3A"},
+    {title: "Saanga - Iguaçu", location: {lat: -25.448126, lng: -49.284492}, id: "ChIJh4hxZIfj3JQReSm2xlukAsw"}
 ];
+
+
+/* INITIALIZE MAP FUNCTION */
+
 
 function initMap() {
     // Constructor creates a new map - only center and zoom are required.
@@ -35,6 +41,7 @@ var largeInfowindow = new google.maps.InfoWindow();
             animation: google.maps.Animation.DROP,
             id: id,
           });
+            restaurants[i].markerObject = marker;
           // Push the marker to our array of markers.
           markers.push(marker);
           // Create an onclick event to open an infowindow at each marker.
