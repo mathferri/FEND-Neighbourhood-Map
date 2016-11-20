@@ -7,11 +7,13 @@
     .menu {
         -webkit-transform: translateX(-400px);
         transform: translateX(-400px);
+        top: 90px;
     }
 
     .menu-active {
         -webkit-transform: translateX(0);
         transform: translateX(0);
+        
     }
     
     header h1 {

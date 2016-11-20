@@ -23,9 +23,10 @@ header {
     background: #f49c14;
     padding: 30px;
     overflow: hidden;
-    position: fixed;
+    height: 90px;
     width: 100%;
-    z-index: 999;
+    z-index: 99;
+    display: block;
 }
 
 header h1 {
@@ -35,11 +36,6 @@ header h1 {
     width: 100%;
     padding-left: 50px;
     font-size: 1.5em;
-}
-
-
-h2 {
-    padding-top: 100px;
 }
 
 .menu-anchor {
@@ -93,6 +89,7 @@ h2 {
 .menu-active{
     -webkit-transform: translateY(0);
     transform: translateY(0);
+    top: 90px;
 }
 
 .search-box {
@@ -112,12 +109,9 @@ h2 {
 /* MAIN */
 
 .main{
-    height: 100%;
+    height: calc(100% - 90px);
 }
 
 #map{
     height: 100%;
 }
-
-/* -----------------------------------*/
-
