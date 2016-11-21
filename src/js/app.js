@@ -1,3 +1,5 @@
+
+
 /* MAP VARIABLES*/
 
 var map;
@@ -9,11 +11,11 @@ var marker;
 var infoWindow;
 
 var restaurants = [
-    {title: "Tuk-Tuk Comida Indiana e Tailandesa", location: {lat: -25.4141575, lng: -49.2462872}, id: "ChIJZUviWDLk3JQRNRqYsyrkIRk"},
-    {title: "Terrazza 40 - Restaurante Panorâmico", location: {lat: -25.4302751, lng: -49.2919939}, id: "ChIJ_wDMVPDj3JQRwXztiU8LKs4"},
-    {title: "Lisboa Gastronomia", location: {lat: -25.4294114, lng: -49.2817917}, id: "ChIJ61qqKwrk3JQRsQan_u3rtbo"},
-    {title: "Pasteur Grill", location: {lat: -25.4429859, lng: -49.2799385}, id: "ChIJkb4GW3fk3JQRbOAATP6bH3A"},
-    {title: "Saanga - Iguaçu", location: {lat: -25.448126, lng: -49.284492}, id: "ChIJh4hxZIfj3JQReSm2xlukAsw"}
+    {title: "Tuk-Tuk Comida Indiana e Tailandesa", location: {lat: -25.4141575, lng: -49.2462872}, id: "ChIJZUviWDLk3JQRNRqYsyrkIRk", foursquareId: "52d5be8b11d2fbb4e0f1e7d2"},
+    {title: "Terrazza 40 - Restaurante Panorâmico", location: {lat: -25.4302751, lng: -49.2919939}, id: "ChIJ_wDMVPDj3JQRwXztiU8LKs4", foursquareId: "51e86682498e8f08b915e6e7"},
+    {title: "Lisboa Gastronomia", location: {lat: -25.4294114, lng: -49.2817917}, id: "ChIJ61qqKwrk3JQRsQan_u3rtbo", foursquareId: "50a6c614e4b0595058162db9"},
+    {title: "Pasteur Grill", location: {lat: -25.4429859, lng: -49.2799385}, id: "ChIJkb4GW3fk3JQRbOAATP6bH3A", foursquareId: "4b8558a6f964a520275831e3"},
+    {title: "Saanga - Iguaçu", location: {lat: -25.448126, lng: -49.284492}, id: "ChIJh4hxZIfj3JQReSm2xlukAsw", foursquareId: "4baf9ae8f964a5203b0f3ce3"}
 ];
 
 /* INITIALIZE MAP FUNCTION */
@@ -26,6 +28,7 @@ function initMap() {
         mapTypeControl: false
     });
     
+    //Creates infowindow.
     infoWindow = new google.maps.InfoWindow();
 
     // Style the markers a bit. This will be our listing marker icon.
@@ -41,6 +44,9 @@ function initMap() {
         var position = restaurants[i].location;
         var title = restaurants[i].title;
         var id = restaurants[i].id;
+        var foursquareId = "https://api.foursquare.com/v2/venues/" + restaurants[i].foursquareId + "?client_id=HK5Q131ZUKJGCXU5TMCIKLUBQFQW5Q4KH0DR2OPXYGTP3YR4&client_secret=1DAJ43G0GAS3KGA5KLNGIVHHSGTIFJ0UM2DQY5GKMNKQ35ON&v=20161120";
+            
+                
         // Create a marker per restaurant, and put into markers array.
         marker = new google.maps.Marker({
             position: position,
@@ -48,7 +54,10 @@ function initMap() {
             animation: google.maps.Animation.DROP,
             id: id,
             icon: defaultIcon,
+            foursquareId: foursquareId
         });
+        
+        
         // Adds marker to restaurant item.
         restaurants[i].markerObject = marker;
         // Push the marker to our array of markers.
@@ -76,13 +85,25 @@ function initMap() {
 
 function populateInfoWindow(marker, infowindow) {
     // Check to make sure the infowindow is not already opened on this marker.
-    if (infowindow.marker != marker) {
+    
+    
+     $.ajax({
+                url: marker.foursquareId,
+                dataType: "jsonp",
+                // ajax settings
+                success: function(response) {
+                    foursquareUrl = response.response.venue.canonicalUrl;
+                    foursquareRating = response.response.venue.rating;
+                    if (infowindow.marker != marker) {
         // Get information from Google Maps API and display it on the marker's infowindow.
+        
+         
         var service = new google.maps.places.PlacesService(map);
         service.getDetails({placeId: marker.id}, function(place, status) {
             if (status === google.maps.places.PlacesServiceStatus.OK) {
                 // Set the marker property on this infowindow so it isn't created again.
                 infowindow.marker = marker;
+                
                 var innerHTML = "<div>";
                 // If statements check for existance at Google Maps API request and if so adds it to the inner HTML.
                 if (place.name) {
@@ -106,9 +127,9 @@ function populateInfoWindow(marker, infowindow) {
                 }
                 if (place.photos) {
                     innerHTML += "<br><br><img src='" + place.photos[0].getUrl(
-                        {maxHeight: 100, maxWidth: 200}) + "'>";
+                        {maxHeight: 100, maxWidth: 200}) + "'><br><br>";
                 }
-                innerHTML += "</div>";
+                innerHTML += "<a href='" + foursquareUrl + "'>Foursquare Page</a><br><br><strong>Rating:</strong><br><br>" + foursquareRating + "</div>";
                 infowindow.setContent(innerHTML);
                 infowindow.open(map, marker);
                 // Make sure the marker property is cleared if the infowindow is closed.
@@ -120,6 +141,9 @@ function populateInfoWindow(marker, infowindow) {
         });
         toggleBounce(marker);
     }
+                }
+            });  
+    
 }
             
 /* SHOW LISTINGS FUNCTION*/
@@ -201,13 +225,17 @@ var AppViewModel = function() {
 
 // Initialize Knockout and display markers when document is ready.
 
-$(document).ready(function(){
-    //Menu toggle.
-    $('.menu-anchor').on('click touchstart', function(e){
-        $('.menu').toggleClass('menu-active');
+var view = function(){
+
+    $(document).ready(function(){
+        //Menu toggle.
+        $('.menu-anchor').on('click touchstart', function(e){
+            $('.menu').toggleClass('menu-active');
+        });
+        //Display Markers.
+        showListings();
+        // Initialize Knockout.
+        ko.applyBindings(new AppViewModel());
     });
-    //Display Markers.
-    showListings();
-    // Initialize Knockout.
-    ko.applyBindings(new AppViewModel());
-});
+    
+}();
