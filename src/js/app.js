@@ -1,5 +1,3 @@
-
-
 /* MAP VARIABLES*/
 
 var map;
@@ -40,13 +38,13 @@ function initMap() {
     
     // The following group uses the location array to create an array of markers on initialize.
     for (var i = 0; i < restaurants.length; i++) {
+        
         // Get the variables from the array.
         var position = restaurants[i].location;
         var title = restaurants[i].title;
         var id = restaurants[i].id;
         var foursquareId = "https://api.foursquare.com/v2/venues/" + restaurants[i].foursquareId + "?client_id=HK5Q131ZUKJGCXU5TMCIKLUBQFQW5Q4KH0DR2OPXYGTP3YR4&client_secret=1DAJ43G0GAS3KGA5KLNGIVHHSGTIFJ0UM2DQY5GKMNKQ35ON&v=20161120";
-            
-                
+                   
         // Create a marker per restaurant, and put into markers array.
         marker = new google.maps.Marker({
             position: position,
@@ -57,15 +55,17 @@ function initMap() {
             foursquareId: foursquareId
         });
         
-        
         // Adds marker to restaurant item.
         restaurants[i].markerObject = marker;
+        
         // Push the marker to our array of markers.
         markers.push(marker);
+        
         // Create an onclick event to open an infowindow at each marker.
         marker.addListener("click", function() {
             populateInfoWindow(this, infoWindow);
         });
+        
         // Two event listeners - one for mouseover, one for mouseout,
         // to change the colors back and forth.
         marker.addListener('mouseover', function() {
@@ -74,8 +74,8 @@ function initMap() {
         marker.addListener('mouseout', function() {
             this.setIcon(defaultIcon);
         });
-    }
-}
+    };
+};
 
 /* POPULATE INFOWINDOW FUNCTION*/
 
@@ -84,67 +84,62 @@ function initMap() {
 // on that markers position.
 
 function populateInfoWindow(marker, infowindow) {
-    // Check to make sure the infowindow is not already opened on this marker.
     
-    
-     $.ajax({
-                url: marker.foursquareId,
-                dataType: "jsonp",
-                // ajax settings
-                success: function(response) {
-                    foursquareUrl = response.response.venue.canonicalUrl;
-                    foursquareRating = response.response.venue.rating;
-                    if (infowindow.marker != marker) {
-        // Get information from Google Maps API and display it on the marker's infowindow.
-        
-         
-        var service = new google.maps.places.PlacesService(map);
-        service.getDetails({placeId: marker.id}, function(place, status) {
-            if (status === google.maps.places.PlacesServiceStatus.OK) {
-                // Set the marker property on this infowindow so it isn't created again.
-                infowindow.marker = marker;
+    $.ajax({
+        url: marker.foursquareId,
+        dataType: "jsonp",
+        // ajax settings
+        success: function(response) {
+            foursquareUrl = response.response.venue.canonicalUrl;
+            foursquareRating = response.response.venue.rating;
+            // Check to make sure the infowindow is not already opened on this marker. 
+            if (infowindow.marker != marker) {
+                // Get information from Google Maps API and display it on the marker's infowindow.
+                toggleBounce(marker); 
+                var service = new google.maps.places.PlacesService(map);
+                service.getDetails({placeId: marker.id}, function(place, status) {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        // Set the marker property on this infowindow so it isn't created again.
+                        infowindow.marker = marker;
                 
-                var innerHTML = "<div>";
-                // If statements check for existance at Google Maps API request and if so adds it to the inner HTML.
-                if (place.name) {
-                    innerHTML += "<strong>" + place.name + "</strong><br>";
-                }
-                if (place.formatted_address) {
-                    innerHTML += "<br>" + place.formatted_address;
-                }
-                if (place.formatted_phone_number) {
-                    innerHTML += "<br>" + place.formatted_phone_number;
-                }
-                if (place.opening_hours) {
-                    innerHTML += "<br><br><strong>Hours:</strong><br><br>" +
-                        place.opening_hours.weekday_text[0] + "<br>" +
-                        place.opening_hours.weekday_text[1] + "<br>" +
-                        place.opening_hours.weekday_text[2] + "<br>" +
-                        place.opening_hours.weekday_text[3] + "<br>" +
-                        place.opening_hours.weekday_text[4] + "<br>" +
-                        place.opening_hours.weekday_text[5] + "<br>" +
-                        place.opening_hours.weekday_text[6];
-                }
-                if (place.photos) {
-                    innerHTML += "<br><br><img src='" + place.photos[0].getUrl(
-                        {maxHeight: 100, maxWidth: 200}) + "'><br><br>";
-                }
-                innerHTML += "<a href='" + foursquareUrl + "'>Foursquare Page</a><br><br><strong>Rating:</strong><br><br>" + foursquareRating + "</div>";
-                infowindow.setContent(innerHTML);
-                infowindow.open(map, marker);
-                // Make sure the marker property is cleared if the infowindow is closed.
-                infowindow.addListener("closeclick", function() {
-                    infowindow.marker = null;
-                });
-                
-            }
-        });
-        toggleBounce(marker);
-    }
-                }
-            });  
-    
-}
+                        var innerHTML = "<div>";
+                        // If statements check for existance at Google Maps API request and if so adds it to the inner HTML.
+                        if (place.name) {
+                            innerHTML += "<strong>" + place.name + "</strong><br>";
+                        }
+                        if (place.formatted_address) {
+                            innerHTML += "<br>" + place.formatted_address;
+                        }
+                        if (place.formatted_phone_number) {
+                            innerHTML += "<br>" + place.formatted_phone_number;
+                        }
+                        if (place.opening_hours) {
+                            innerHTML += "<br><br><strong>Hours:</strong><br><br>" +
+                            place.opening_hours.weekday_text[0] + "<br>" +
+                            place.opening_hours.weekday_text[1] + "<br>" +
+                            place.opening_hours.weekday_text[2] + "<br>" +
+                            place.opening_hours.weekday_text[3] + "<br>" +
+                            place.opening_hours.weekday_text[4] + "<br>" +
+                            place.opening_hours.weekday_text[5] + "<br>" +
+                            place.opening_hours.weekday_text[6];
+                        }
+                        if (place.photos) {
+                            innerHTML += "<br><br><img src='" + place.photos[0].getUrl(
+                            {maxHeight: 100, maxWidth: 200}) + "'><br><br>";
+                        }
+                        innerHTML += "<a href='" + foursquareUrl + "'>Foursquare Page</a><br><br><strong>Rating:</strong><br><br>" + foursquareRating + "</div>";
+                        infowindow.setContent(innerHTML);
+                        infowindow.open(map, marker);
+                        // Make sure the marker property is cleared if the infowindow is closed.
+                        infowindow.addListener("closeclick", function() {
+                            infowindow.marker = null;
+                        });
+                    };
+                });   
+            };
+        }
+    });   
+};
             
 /* SHOW LISTINGS FUNCTION*/
 
@@ -153,8 +148,8 @@ function showListings() {
     //display the marker.
     for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(map);  
-    }   
-} 
+    };   
+}; 
 
 /* TOGGLE BOUNCE FUNCTION */
 
@@ -166,8 +161,8 @@ function toggleBounce(marker) {
         setTimeout(function() {
             marker.setAnimation(null);
         }, 1400);
-    }
-}
+    };
+};
 
 /* MAKE MARKER FUNCTION */
 
@@ -188,7 +183,6 @@ function makeMarkerIcon(markerColor) {
 /* VIEW MODEL */
 
 //Creates the view model with Knockout.
-
 var AppViewModel = function() {
 
     var self = this;
